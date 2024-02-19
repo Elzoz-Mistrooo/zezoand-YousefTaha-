@@ -19,7 +19,7 @@ const doctorSchema = new Schema(
 
         appointment: {
             type: String,
-            required: [true, "Appointment about octor is require"],
+            required: [false, "Appointment about octor is require"],
         },
         section: {
             type: String,
