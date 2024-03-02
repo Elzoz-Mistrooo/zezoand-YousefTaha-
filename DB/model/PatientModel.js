@@ -4,7 +4,11 @@ const patientSchema = new Schema({
 
 
     ...userSchema,
-
+    medicalappointments: [{
+        type: Types.ObjectId, ref: "Appointment",
+        required: true
+    }
+    ],
     medicalHistory: {
         type: String,
         required: true

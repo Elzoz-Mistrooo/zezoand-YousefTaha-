@@ -15,7 +15,7 @@ export const createAppointment = asyncHandler(async (req, res, next) => {
 
 
     checkThisAppointment.patientId = patientId
-    checkThisAppointment.status = "confirmed"
+    checkThisAppointment.status = "pending"
 
     await checkThisAppointment.save()
     return res.json({ message: "Done", checkThisAppointment })

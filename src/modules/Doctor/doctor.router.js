@@ -9,7 +9,12 @@ import *as validators from './doctor.validation.js'
 
 router.get("/getProfile", DoctorController.getProfile)
 router.patch("/sendCode", validation(validators.sendCode), DoctorController.sendCode)
+router.get("/confirmEmail/:token", validation(validators.token), DoctorController.confirmEmail)
+router.get("/newConfirmEmail/:token", validation(validators.token), DoctorController.ReqNewconfirmEmail)
 router.patch("/forgetpassword", validation(validators.forgetpassword),DoctorController.forgetpassword )
+
+router.post("/medicalappointments",)
+router.post("/medicalappointments",)
 router.post("/Doctorlogin", DoctorController.Doctorlogin)
 router.post("/appointment", DoctorController.appointDoctor)
 router.get("/get", DoctorController.getAllDoctors)

@@ -7,12 +7,13 @@ import { hash, compare } from '../../../utils/HashAndCompare.js';
 import { generateToken, verifyToken } from '../../../utils/GenerateAndVerifyToken.js'
 import { customAlphabet, nanoid } from 'nanoid';
 import doctorModel from "../../../../DB/model/doctorModel.js";
+import PatientModel from "../../../../DB/model/PatientModel.js";
 
 // Controller method for fetching all doctors
 
-export const getProfile=asyncHandler(async (req, res, next) => {
-    const{doctorId}=req.body
-    const doctor = await doctorModel.findById({doctorId})
+export const getProfile = asyncHandler(async (req, res, next) => {
+    const { doctorId } = req.body
+    const doctor = await doctorModel.findById({ doctorId })
     return res.status(200).json({ message: "Here we are all doctors", doctor })
 }
 )
@@ -78,8 +79,8 @@ export const createDoctor = asyncHandler(async (req, res, next) => {
     const token = generateToken({ payload: { email: email.toLowerCase() }, signature: "SecretEasyClinc", expiresIn: 60 * 5 })
     const refreshToken = generateToken({ payload: { email: email.toLowerCase() }, signature: "SecretEasyClinc", expiresIn: 60 * 60 * 24 })
 
-    const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${token}`
-    const rfLink = `${req.protocol}://${req.headers.host}/auth/NewConfirmEmail/${refreshToken}`
+    const link = `${req.protocol}://${req.headers.host}/doctor/confirmEmail/${token}`
+    const rfLink = `${req.protocol}://${req.headers.host}/doctor/NewConfirmEmail/${refreshToken}`
     const html = `<!DOCTYPE html>
         <html>
         <head>
@@ -178,27 +179,27 @@ export const createDoctor = asyncHandler(async (req, res, next) => {
         </body>
         </html>`
 
-        if (! await sendEmail({ to: email, subject: 'Confirmation-Email', html })) {
-            return next(new Error("Email Rejected"))
-        }
+    if (! await sendEmail({ to: email, subject: 'Confirmation-Email', html })) {
+        return next(new Error("Email Rejected"))
+    }
     //hashPassword
     const hashPassword = hash({ plaintext: password })
     //save
     // const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `${process.env.APP_NAME}` })
-        const newDoctor = await doctorModel.create({
-            email,
-            section,
-            price,
-            userName,
-            password:hashPassword, phone, gender,
-            specialties,
-            qualifications,
-            experience,
-            // image: { secure_url, public_id }
-    
-        });
+    const newDoctor = await doctorModel.create({
+        email,
+        section,
+        price,
+        userName,
+        password: hashPassword, phone, gender,
+        specialties,
+        qualifications,
+        experience,
+        // image: { secure_url, public_id }
 
-    return res.status(201).json({ message: "Done", newDoctor  })
+    });
+
+    return res.status(201).json({ message: "Done", newDoctor })
 
 
 })
@@ -211,7 +212,7 @@ export const createDoctor = asyncHandler(async (req, res, next) => {
 
 
 
-export const confirmEmail =asyncHandler( async (req, res, next) => {
+export const confirmEmail = asyncHandler(async (req, res, next) => {
     const { token } = req.params
     const { email } = verifyToken({ token, signature: "SecretEasyClinc" })
     if (!email) {
@@ -245,8 +246,8 @@ export const ReqNewconfirmEmail = asyncHandler(async (req, res, next) => {
 
     const newRefreshtoken = generateToken({ payload: { email: email.toLowerCase() }, signature: "SecretEasyClinc", expiresIn: 60 * 2 })
 
-    const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newRefreshtoken}`
-    const rfLink = `${req.protocol}://${req.headers.host}/auth/NewConfirmEmail/${token}`
+    const link = `${req.protocol}://${req.headers.host}/doctor/confirmEmail/${newRefreshtoken}`
+    const rfLink = `${req.protocol}://${req.headers.host}/doctor/NewConfirmEmail/${token}`
 
     const html = `<!DOCTYPE html>
         <html>
@@ -511,6 +512,41 @@ export const Doctorlogin = asyncHandler(async (req, res, next) => {
 
 
 
+export const medicalappointments = asyncHandler(async (req, res, next) => {
+    const { appointmentId } = req.body
+    const appointSear = await AppointmentModel.findById({ appointmentId })
+
+    if (!appointSear) {
+        return next(new Error("There is not AppointmentID."))
+    }
+
+    await PatientModel.updateOne({ _id: appointSear.patientId }, { $push: { medicalappointments: appointmentId } })
+    appointSear.status = "confirmed"
+    await appointSear.save()
+
+    return res.json({ Mesagge: "Done", appointSear })
+
+
+
+})
+
+
+
+export const Cancelmedicalappointments = asyncHandler(async (req, res, next) => {
+    const { appointmentId } = req.body
+    const appointSear = await AppointmentModel.findById({ appointmentId })
+
+    if (!appointSear) {
+        return next(new Error("There is not AppointmentID."))
+    }
+    appointSear.patientId = null
+    appointSear.status = "available"
+    await appointSear.save()
+
+
+    return res.json({ Mesagge: "Done", appointSear })
+
+})
 
 
 

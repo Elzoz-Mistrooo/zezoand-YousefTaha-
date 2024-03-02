@@ -10,6 +10,7 @@ const appointmentSchema = new Schema({
   patientId: {
     type: Schema.Types.ObjectId,
     ref: 'Patient',
+    
   },
   appointmentDateTime: {
     type: Date,

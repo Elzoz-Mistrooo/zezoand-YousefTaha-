@@ -1,5 +1,5 @@
 import connectDB from '../DB/connection.js'
-import authRouter from './modules/auth/auth.router.js'
+// import authRouter from './modules/auth/auth.router.js'
 import doctorRouter from './modules/Doctor/doctor.router.js'
 import patientRouter from './modules/Patient/Patient.router.js'
 import createAppointment from './modules/appointment/appointment.router.js'
@@ -24,7 +24,7 @@ const initApp = (app, express) => {
         //convert Buffer Data
         app.use(express.json({}))
     //Setup API Routing 
-    app.use('/auth', authRouter)
+    // app.use('/auth', authRouter)
     app.use('/doctor', doctorRouter)
     app.use('/patient', patientRouter)
     app.use('/appointment', createAppointment)
