@@ -7,7 +7,10 @@ import { validation } from '../../middleware/validation.js';
 import *as validators from './doctor.validation.js'
 // import { author } from '../../middleware/auth.js';
 
-
+router.get("/getProfile", DoctorController.getProfile)
+router.patch("/sendCode", validation(validators.sendCode), DoctorController.sendCode)
+router.patch("/forgetpassword", validation(validators.forgetpassword),DoctorController.forgetpassword )
+router.post("/Doctorlogin", DoctorController.Doctorlogin)
 router.post("/appointment", DoctorController.appointDoctor)
 router.get("/get", DoctorController.getAllDoctors)
 router.post("/DoctorSignup", Fileupload(allowedExtensions.Image).single('image'), validation(validators.createDoctor), DoctorController.createDoctor)

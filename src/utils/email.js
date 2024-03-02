@@ -1,12 +1,13 @@
 import nodemailer from "nodemailer"
-
-const sendEmail = async ({ to, cc, bcc, subject, html, attachments = [] } = {}) => {
+import { config } from "dotenv";
+config()
+const sendEmail = async ({ to, cc, bcc, subject, text, html, attachments = [] } = {}) => {
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
             // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-            user: "zezoelmalky894@gmail.com",
-            pass: "tndsbcrleflxeeme",
+            user: process.env.EMAIL,
+            pass: process.env.EMAIL_PASSWORD,
         }
     });
 
@@ -17,6 +18,7 @@ const sendEmail = async ({ to, cc, bcc, subject, html, attachments = [] } = {}) 
         cc,
         bcc,
         subject,
+        text,
         html,
         attachments
     });
@@ -25,6 +27,10 @@ const sendEmail = async ({ to, cc, bcc, subject, html, attachments = [] } = {}) 
     return info.rejected.length ? false : true
 }
 
+console.log({
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+})
 
 
 export default sendEmail

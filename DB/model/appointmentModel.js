@@ -20,7 +20,7 @@ const appointmentSchema = new Schema({
     enum: ['pending', 'confirmed', 'canceled', 'available'],
     default: 'available'
   },
-
+  
 });
 
 const AppointmentModel = mongoose.model('Appointment', appointmentSchema);

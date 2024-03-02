@@ -11,13 +11,15 @@ import sendEmail from '../../../utils/email.js'
 import { hash, compare } from '../../../utils/HashAndCompare.js';
 import { generateToken, verifyToken } from '../../../utils/GenerateAndVerifyToken.js'
 import { customAlphabet, nanoid } from 'nanoid';
+import PatientModel from '../../../../DB/model/PatientModel.js';
+import doctorModel from '../../../../DB/model/doctorModel.js';
 
 
 
 export const signup = asyncHandler(async (req, res, next) => {
 
     const { userName, email, password, firstName, lastName, gender, age, adress } = req.body
-    const checkuser = await userModel.findOne({ email: email.toLowerCase() })
+    const checkuser = await PatientModel.findOne({ email })
     if (checkuser) {
         return next(new Error("ThisEmailFoundBefore,please Try with new email"))
     }
@@ -128,21 +130,17 @@ export const signup = asyncHandler(async (req, res, next) => {
         </body>
         </html>`
 
-    if (! await sendEmail({ to: email, subject: 'Confirmation-Email', html })) {
+    if (! await sendEmail({ to: email, subject: 'Confirmation-Email', text: "YousefTahaKoloTmam" })) {
         return next(new Error("Email Rejected"))
     }
     //hashPassword
     const hashPassword = hash({ plaintext: password })
     //save
-    const user = await userModel.create({ userName, email, password: hashPassword })
+    const user = await PatientModel.create({ userName, email, password: hashPassword })
     return res.status(201).json({ message: "Done", user })
 
 
 })
-
-
-
-
 
 
 export const confirmEmail = async (req, res, next) => {
@@ -151,7 +149,26 @@ export const confirmEmail = async (req, res, next) => {
     if (!email) {
         return next(new Error("Please,PUT INVAILED EMAIL", { cause: 400 }))
     }
-    const user = await userModel.updateOne({ email: email.toLowerCase() }, { confirmEmail: true })
+    const user = await doctorModel.updateOne({ email }, { confirmEmail: true })
+    if (user.matchedCount) {
+        res.status(200).json({ messge: 'Confirmed done, please try to login', user })
+
+    } else {
+        res.json({ message: "It's not Register Account,or there is problem" })
+    }
+
+
+}
+
+
+
+export const confirmEmaill = async (req, res, next) => {
+    const { token } = req.params
+    const { email } = verifyToken({ token, signature: "SecretEasyClinc" })
+    if (!email) {
+        return next(new Error("Please,PUT INVAILED EMAIL", { cause: 400 }))
+    }
+    const user = await PatientModel.updateOne({ email }, { confirmEmail: true })
     if (user.matchedCount) {
         res.status(200).json({ messge: 'Confirmed done, please try to login', user })
 
@@ -169,7 +186,7 @@ export const ReqNewconfirmEmail = async (req, res, next) => {
     if (!email) {
         return next(new Error("Please,PUT INVAILED EMAIL", { cause: 400 }))
     }
-    const user = await userModel.findOne({ email: email.toLowerCase() })
+    const user = await doctorModel.findOne({ email: email.toLowerCase() })
     if (!user) {
         return next(new Error("No Email here for making another ReqNewGmaillink"))
     }

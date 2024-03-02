@@ -33,3 +33,29 @@ export const UpdateDoctor = joi.object({
     appointment: joi.string().min(3).max(25),
     file: generalFields.file
 }).required()
+export const login = joi.object({
+    email: generalFields.email,
+    password: generalFields.password
+
+}).required()
+
+
+
+export const sendCode = joi.object({
+    email: generalFields.email,
+
+}).required()
+
+
+
+export const forgetpassword = joi.object({
+    //body
+    forgetCode: joi.string().pattern(new RegExp(/[0-9]{4}$/)).required(),
+    email: joi.string().email(
+        { minDomainSegments: 2, maxDomainSegments: 4, tlds: { allow: ['com', 'net', 'edu', 'eg', 'hambozo'] } }
+    ).required(),
+    password: joi.string().pattern(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)).required(),
+    cPassword: generalFields.cPassword.valid(joi.ref('password')),
+
+
+}).required();

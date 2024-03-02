@@ -21,5 +21,11 @@ export const createAppointment = asyncHandler(async (req, res, next) => {
     return res.json({ message: "Done", checkThisAppointment })
 })
 
-
+export const GetallAppointment=asyncHandler(async(req,res,next)=>{
+    const{doctorId}=req.params
+    const appointments=await AppointmentModel.find({doctorId})
+    return res.json({message:"Done",appointments})
+ 
+    
+})
 // appointmentDateTime
