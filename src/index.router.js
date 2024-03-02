@@ -34,7 +34,9 @@ const initApp = (app, express) => {
     // app.use(adminRoutes"));
     // app.use(doctorRoutes"));
 
-
+    app.get("",(req,res)=>{
+        return res.json({mesage:"Hello That's our EasyClinc Project"})
+    })
     app.all('*', (req, res, next) => {
         res.send("In-valid Routing Plz check url  or  method")
     })
