@@ -17,6 +17,11 @@ export const getProfile = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Here we are all doctors", doctor })
 }
 )
+export const getPatientsandAppoints = asyncHandler(async (req, res, next) => {
+    const patientAppoints = await AppointmentModel.find({ patientId:{$ne:null },doctorId:req.body._id }).populate("patientId")
+    return res.status(200).json({ message: "Here we are all doctors", patientAppoints })
+}
+)
 
 export const getAllDoctors = asyncHandler(async (req, res, next) => {
     const doctor = await doctorModel.find()
@@ -514,7 +519,7 @@ export const Doctorlogin = asyncHandler(async (req, res, next) => {
 
 export const medicalappointments = asyncHandler(async (req, res, next) => {
     const { appointmentId } = req.body
-    const appointSear = await AppointmentModel.findById({ appointmentId })
+    const appointSear = await AppointmentModel.findById( appointmentId )
 
     if (!appointSear) {
         return next(new Error("There is not AppointmentID."))

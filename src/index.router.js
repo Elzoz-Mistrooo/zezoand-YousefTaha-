@@ -3,6 +3,7 @@ import connectDB from '../DB/connection.js'
 import doctorRouter from './modules/Doctor/doctor.router.js'
 import patientRouter from './modules/Patient/Patient.router.js'
 import createAppointment from './modules/appointment/appointment.router.js'
+import hosptailAppointment from './modules/Hosptails/hosptail.router.js'
 // import userRouter from './modules/user/user.router.js'
 import { globalErrorHandling } from './utils/errorHandling.js'
 import morgan from 'morgan'
@@ -28,6 +29,7 @@ const initApp = (app, express) => {
     app.use('/doctor', doctorRouter)
     app.use('/patient', patientRouter)
     app.use('/appointment', createAppointment)
+    app.use('/hospital', hosptailAppointment)
 
     // app.use(`/user`, userRouter)
     // app.use("")

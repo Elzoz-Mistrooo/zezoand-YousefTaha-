@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken'
 import sendEmail from '../../../utils/email.js'
 import { hash, compare } from '../../../utils/HashAndCompare.js';
 import { generateToken, verifyToken } from '../../../utils/GenerateAndVerifyToken.js'
-import AppointmentModel from "../../../../DB/model/appointmentModel.js";
 
 export const getAllPatients = asyncHandler(async (req, res, next) => {
     const Patient = await PatientModel.find()
